@@ -1,4 +1,4 @@
-# Bot OR not by SoWeGoOn
+# Bot Or Not by SoWeGoOn
 
 In order to help collect sample data for ChronicCoders AI series, I made this small project which helps create test data.
 
