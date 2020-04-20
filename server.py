@@ -5,6 +5,8 @@ import pandas as pd
 import os
 # set the project root directory as the static folder, you can set others.
 app = Flask(__name__)
+#Dont cache anything
+app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
 
 BlankGif = "R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==" #Load Blank Gif in -1 Spot
 
@@ -16,7 +18,7 @@ def LoadAPI(currUser = None, botMark = None):
 
     #Read the current path
     if os.path.exists(os.path.join(os.getcwd(), DataReading)) == True:
-        df1 = pd.read_csv(os.path.join(os.getcwd(),DataReading),encoding = "ISO-8859-1", engine="python")
+        df1 = pd.read_csv(os.path.join(os.getcwd(),DataReading),encoding = "ISO-8859-1", engine="python", dtype=str)
     else:
         print("Specified Data Path Does Not Exist!")
         os._exit()
@@ -35,98 +37,71 @@ def LoadAPI(currUser = None, botMark = None):
         for i in range(df1.shape[0]):
             #Check to see if this user has been compared before, if its not, get their values
             if df1.loc[i]['Name'] not in df2['Name']:
-                valueFormat = df1.iloc[i,0:]
-                return {
-                "status": 1,
-                "name": valueFormat["Name"],
-                "helmet": FetchIcon(valueFormat["helmet"]),
-                "amulet" : FetchIcon(valueFormat["amulet"]),
-                "weapon": FetchIcon(valueFormat["weapon"]),
-                "body": FetchIcon(valueFormat["body"]),
-                "shield": FetchIcon(valueFormat["sheild"]),
-                "legs": FetchIcon(valueFormat["legs"]),
-                "gloves": FetchIcon(valueFormat["gloves"]),
-                "boots": FetchIcon(valueFormat["boots"]),
-                "attack": valueFormat["Attack"],
-                "defence": valueFormat["Defence"],
-                "strength": valueFormat["Strength"],
-                "hitpoints": valueFormat["Hitpoints"],
-                "ranged": valueFormat["Ranged"],
-                "prayer": valueFormat["Prayer"],
-                "magic": valueFormat["Magic"],
-                "cooking": valueFormat["Cooking"],
-                "woodcutting": valueFormat["Woodcutting"],
-                "fletching": valueFormat["Fletching"],
-                "fishing": valueFormat["Fishing"],
-                "firemaking": valueFormat["Firemaking"],
-                "crafting": valueFormat["Crafting"],
-                "smithing": valueFormat["Smithing"],
-                "mining": valueFormat["Mining"],
-                "herblore": valueFormat["Herblore"],
-                "agility": valueFormat["Agility"],
-                "thieving": valueFormat["Thieving"],
-                "slayer": valueFormat["Slayer"],
-                "farming": valueFormat["Farming"],
-                "runecrafting": valueFormat["Runecrafting"],
-                "hunter": valueFormat["Hunter"],
-                "construction": valueFormat["Construction"],
-                "location": valueFormat["Location"]
-                }
+               return ReturnToUser(df1.iloc[i,0:])
     else:
         #Write the status
         writeData = open(os.path.join(os.getcwd(), DataReading), "a")
         getLoc = df1.loc[df1['Name']==currUser].index[0]
-        writeData.write("{},{},{}".format(currUser, df1.iloc[getLoc, 1:13].tolist(), botMark))
+        writeData.write("{},{},{}".format(currUser, df1.iloc[getLoc, 1:].tolist(), botMark))
         for i in range(df1.shape[0]):
             #Check to see if this user has been compared before, if its not, get their values
             if df1.loc[i]['Name'] not in df2['Name']:
-                valueFormat = df1.iloc[i,0:13]
-                return {
-                "status": 1,
-                "name": valueFormat["Name"],
-                "helmet": FetchIcon(valueFormat["helmet"]),
-                "amulet" : FetchIcon(valueFormat["amulet"]),
-                "weapon": FetchIcon(valueFormat["weapon"]),
-                "body": FetchIcon(valueFormat["body"]),
-                "shield": FetchIcon(valueFormat["sheild"]),
-                "legs": FetchIcon(valueFormat["legs"]),
-                "gloves": FetchIcon(valueFormat["gloves"]),
-                "boots": FetchIcon(valueFormat["boots"]),
-                "attack": valueFormat["Attack"],
-                "defence": valueFormat["Defence"],
-                "strength": valueFormat["Strength"],
-                "hitpoints": valueFormat["Hitpoints"],
-                "ranged": valueFormat["Ranged"],
-                "prayer": valueFormat["Prayer"],
-                "magic": valueFormat["Magic"],
-                "cooking": valueFormat["Cooking"],
-                "woodcutting": valueFormat["Woodcutting"],
-                "fletching": valueFormat["Fletching"],
-                "fishing": valueFormat["Fishing"],
-                "firemaking": valueFormat["Firemaking"],
-                "crafting": valueFormat["Crafting"],
-                "smithing": valueFormat["Smithing"],
-                "mining": valueFormat["Mining"],
-                "herblore": valueFormat["Herblore"],
-                "agility": valueFormat["Agility"],
-                "thieving": valueFormat["Thieving"],
-                "slayer": valueFormat["Slayer"],
-                "farming": valueFormat["Farming"],
-                "runecrafting": valueFormat["Runecrafting"],
-                "hunter": valueFormat["Hunter"],
-                "construction": valueFormat["Construction"],
-                "location": valueFormat["Location"]
-                }
+               return ReturnToUser(df1.iloc[i,0:])
 
+def ReturnToUser(info):
+    valueFormat = info
+    return {
+    "status": 1,
+    "name": valueFormat["Name"],
+    "equipment":
+    {
+        "helmet": FetchIcon(valueFormat["helmet"]),
+        "amulet" : FetchIcon(valueFormat["amulet"]),
+        "weapon": FetchIcon(valueFormat["weapon"]),
+        "body": FetchIcon(valueFormat["body"]),
+        "shield": FetchIcon(valueFormat["sheild"]),
+        "legs": FetchIcon(valueFormat["legs"]),
+        "gloves": FetchIcon(valueFormat["gloves"]),
+        "boots": FetchIcon(valueFormat["boots"])
+    },
+    "skills":
+    {
+        "attack": int(valueFormat["Attack"]),
+        "defence": int(valueFormat["Defence"]),
+        "strength": int(valueFormat["Strength"]),
+        "hitpoints": int(valueFormat["Hitpoints"]),
+        "ranged": int(valueFormat["Ranged"]),
+        "prayer": int(valueFormat["Prayer"]),
+        "magic": int(valueFormat["Magic"]),
+        "cooking": int(valueFormat["Cooking"]),
+        "woodcutting": int(valueFormat["Woodcutting"]),
+        "fletching": int(valueFormat["Fletching"]),
+        "fishing": int(valueFormat["Fishing"]),
+        "firemaking": int(valueFormat["Firemaking"]),
+        "crafting": int(valueFormat["Crafting"]),
+        "smithing": int(valueFormat["Smithing"]),
+        "mining": int(valueFormat["Mining"]),
+        "herblore": int(valueFormat["Herblore"]),
+        "agility": int(valueFormat["Agility"]),
+        "thieving": int(valueFormat["Thieving"]),
+        "slayer": int(valueFormat["Slayer"]),
+        "farming": int(valueFormat["Farming"]),
+        "runecrafting": int(valueFormat["Runecrafting"]),
+        "hunter": int(valueFormat["Hunter"]),
+        "construction": int(valueFormat["Construction"])
+    },
+    "location": valueFormat["Location"]
+    }
 
 def FetchIcon(id):
-    if id == -1:
+    idCopy = int(id)
+    if idCopy == -1:
         return 'data:image/png;base64,' + BlankGif
     else:
-        return 'data:image/png;base64,' + requests.get("https://www.osrsbox.com/osrsbox-db/items-json/{}.json".format(id)).json()['icon']
+        return 'data:image/png;base64,' + requests.get("https://www.osrsbox.com/osrsbox-db/items-json/{}.json".format(idCopy)).json()['icon']
 
 def FetchLocationPic(loc):
-    #add JSON to location
+    #Optional but since we have location, maybe later we can send a picture of location
     return 0
 
 @app.route('/getNextUser', methods=['GET'])
