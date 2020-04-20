@@ -129,7 +129,7 @@ def FetchLocationPic(loc):
     #add JSON to location
     return 0
 
-@app.route('/getNextUser')
+@app.route('/getNextUser', methods=['GET'])
 def api():
     if(request.args.get('currUser')):
         currUser = request.args.get('currUser') #Send the InfoBack Of User
@@ -143,4 +143,4 @@ def root():
     return app.send_static_file("index.html")
 
 if __name__ == '__main__':
-    app.run(port=5003, debug=True)
+    app.run(port=5003, debug=False)

@@ -13,3 +13,7 @@ The idea behind this is that you have a visual idea of each player rather han se
  - pandas [to load CSV]
  - requests
  - numpy
+
+## Issues
+ - Javascript for the index.html needs to be implemented
+ - Backend wont respond for some reason. Gets stuck and then crashes with a SystemExit 3
