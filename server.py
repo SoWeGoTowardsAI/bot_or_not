@@ -79,7 +79,7 @@ def LoadAPI(currUser = None, botMark = None):
         writeData.write("{},{},{}".format(currUser, df1.iloc[getLoc, 1:13].tolist(), botMark))
         for i in range(df1.shape[0]):
             #Check to see if this user has been compared before, if its not, get their values
-            if df1.loc[i]['Name'] not in df2.values():
+            if df1.loc[i]['Name'] not in df2['Name']:
                 valueFormat = df1.iloc[i,0:13]
                 return {
                 "status": 1,
