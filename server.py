@@ -6,20 +6,20 @@ import os
 # set the project root directory as the static folder, you can set others.
 app = Flask(__name__)
 
-BlankGif = "data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==" #Load Blank Gif in -1 Spot
+BlankGif = "R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==" #Load Blank Gif in -1 Spot
 
 DataReading = "data.csv"
 DataTraining = "training_data.csv"
 
 def LoadAPI(currUser = None, botMark = None):
-    global DataReading, DataTraining, BlankGif
+    global DataReading, DataTraining, BlankGif, FetchIcon
 
     #Read the current path
     if os.path.exists(os.path.join(os.getcwd(), DataReading)) == True:
         df1 = pd.read_csv(os.path.join(os.getcwd(),DataReading),encoding = "ISO-8859-1", engine="python")
     else:
         print("Specified Data Path Does Not Exist!")
-        exit()
+        os._exit()
 
     #Ready to write results to 
     if os.path.exists(os.path.join(os.getcwd(), DataTraining)) == False:
@@ -29,12 +29,12 @@ def LoadAPI(currUser = None, botMark = None):
         f.close()
     df2 = pd.read_csv(os.path.join(os.getcwd(),DataReading),encoding = "ISO-8859-1", engine="python")
 
-    
+
     if not currUser:
         #No variable has been passed, first session
         for i in range(df1.shape[0]):
             #Check to see if this user has been compared before, if its not, get their values
-            if df1.loc[i]['Name'] not in df2.values:
+            if df1.loc[i]['Name'] not in df2['Name']:
                 valueFormat = df1.iloc[i,0:]
                 return {
                 "status": 1,
@@ -50,7 +50,7 @@ def LoadAPI(currUser = None, botMark = None):
                 "attack": valueFormat["Attack"],
                 "defence": valueFormat["Defence"],
                 "strength": valueFormat["Strength"],
-                "hitpoints": valueFormat["hitpoints"],
+                "hitpoints": valueFormat["Hitpoints"],
                 "ranged": valueFormat["Ranged"],
                 "prayer": valueFormat["Prayer"],
                 "magic": valueFormat["Magic"],
@@ -95,7 +95,7 @@ def LoadAPI(currUser = None, botMark = None):
                 "attack": valueFormat["Attack"],
                 "defence": valueFormat["Defence"],
                 "strength": valueFormat["Strength"],
-                "hitpoints": valueFormat["hitpoints"],
+                "hitpoints": valueFormat["Hitpoints"],
                 "ranged": valueFormat["Ranged"],
                 "prayer": valueFormat["Prayer"],
                 "magic": valueFormat["Magic"],
@@ -143,4 +143,4 @@ def root():
     return app.send_static_file("index.html")
 
 if __name__ == '__main__':
-    app.run(port=5003, debug=False)
+    app.run(port=5003, debug=True)
