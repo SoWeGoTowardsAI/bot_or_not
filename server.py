@@ -1,3 +1,4 @@
+#Bot Or Not Server script by SoWeGoOn (for ChronicCoder)
 from flask import Flask, render_template, jsonify, request
 import requests
 import numpy as np
@@ -5,15 +6,19 @@ import pandas as pd
 import os
 import sys
 sys.dont_write_bytecode = True
-# set the project root directory as the static folder, you can set others.
 app = Flask(__name__)
-#Dont cache anything
-app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
 
-BlankGif = "R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==" #Load Blank Gif in -1 Spot
+#The Script reads the users as this:
+#Name,helmet,cape,amulet,weapon,body,sheild,Equip7,legs,Equip9,gloves,boots,Equip12,Loc_x,Loc_y,Anim_id,Overall,Attack,Defence,Strength,Hitpoints,Ranged,Prayer,Magic,Cooking,Woodcutting,Fletching,Fishing,Firemaking,Crafting,Smithing,Mining,Herblore,Agility,Thieving,Slayer,Farming,Runecrafting,Hunter,Construction,Location
+#so make sure your data.csv is formatted like this
 
+#---- Settings to change - Script looks for these files in the same directory as server.py
 DataReading = "data.csv"
 DataTraining = "training_data.csv"
+PORTENV = os.environ.get('PORT') or 5007
+#--- Do not change below unless you know what you are doing
+
+BlankGif = "R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==" #Load Blank Gif in -1 Spot
 
 def LoadAPI(currUser = None, botMark = None):
     global DataReading, DataTraining, BlankGif, FetchIcon
@@ -43,6 +48,7 @@ def LoadAPI(currUser = None, botMark = None):
         print("Write to file")
         writeData.write("\n")
         writeData.write("{},{},{}".format(currUser, df1.iloc[getLoc, 1:].tolist(), botMark))
+        writeData.close()
         #Reread the training data for the new info
         df2 = pd.read_csv(os.path.join(os.getcwd(),DataTraining), encoding = "ISO-8859-1", engine="python", error_bad_lines=False)
         for i in range(df1.shape[0]):
@@ -121,6 +127,8 @@ def api():
 def root():
     return app.send_static_file("index.html")
 
+#Dont cache anything
+app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
 @app.after_request
 def set_response_headers(response):
     response.headers['Cache-Control'] = 'no-cache, no-store, must-revalidate'
@@ -136,4 +144,5 @@ if __name__ == '__main__':
         f.close()
     else:
         print("Training data {} detected".format(DataTraining))
-    app.run(port=5003, debug=True)
+    print("SoWeGoOn 'Bot Or Not' Server Script Listening On: {}".format(PORTENV))
+    app.run(port=PORTENV, debug=True)
