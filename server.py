@@ -42,12 +42,10 @@ def LoadAPI(currUser = None, botMark = None):
     else:
         #Write the status
         writeData = open(os.path.join(os.getcwd(), DataTraining), "a+")
-        print("Reading Location {} in df1".format(currUser))
         getLoc = df1.loc[df1['Name']==currUser].index[0]
-        print("Location of {} in df1 found at {}".format(currUser, getLoc))
-        print("Write to file")
         writeData.write("\n")
         writeData.write("{},{},{}".format(currUser, df1.iloc[getLoc, 1:].tolist(), botMark))
+        #Remember to close the file, otherwise the changes wont be immediately be read
         writeData.close()
         #Reread the training data for the new info
         df2 = pd.read_csv(os.path.join(os.getcwd(),DataTraining), encoding = "ISO-8859-1", engine="python", error_bad_lines=False)
@@ -64,6 +62,7 @@ def ReturnToUser(info):
     "equipment":
     {
         "helmet": FetchIcon(valueFormat["helmet"]),
+        "cape": FetchIcon(valueFormat["cape"]),
         "amulet" : FetchIcon(valueFormat["amulet"]),
         "weapon": FetchIcon(valueFormat["weapon"]),
         "body": FetchIcon(valueFormat["body"]),
