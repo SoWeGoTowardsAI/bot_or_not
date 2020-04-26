@@ -6,6 +6,16 @@ How it works is that it loads a player in the CSV, then outputs it on the index.
 
 The idea behind this is that you have a visual idea of each player rather han seeing item IDs which.
 
+## Start The Server
+To start it, open up a console and navigate to the folder that this respitory has been cloned too. Then type:
+```
+python server.py
+```
+If you have a Linux system or have multiple versions of Python, you may need to type:
+```
+python3 server.py
+```
+
 ## Requirements:
  - Python 3
 ### Dependancies
@@ -13,7 +23,3 @@ The idea behind this is that you have a visual idea of each player rather han se
  - pandas [to load CSV]
  - requests
  - numpy
-
-## Issues
- - Javascript for the index.html needs to be implemented
- - Backend wont respond for some reason. Gets stuck and then crashes with a SystemExit 3

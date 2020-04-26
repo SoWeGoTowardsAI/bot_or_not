@@ -144,4 +144,5 @@ if __name__ == '__main__':
     else:
         print("Training data {} detected".format(DataTraining))
     print("SoWeGoOn 'Bot Or Not' Server Script Listening On: {}".format(PORTENV))
-    app.run(port=PORTENV, debug=True)
+    #Any changes to the code while Flask is runnung may crash Flask, just simply rerun it
+    app.run(port=PORTENV, debug=False)
